@@ -1,8 +1,7 @@
-import View from './view.js';
+import {createElement} from '../render.js';
 
-const createEventAddTemplate = () => (
-  `<li class="trip-events__item">
-    <form class="event event--edit" action="#" method="post">
+const createEventNewFormTemplate = () => (
+  ` <form class="event event--edit" action="#" method="post">
       <header class="event__header">
         <div class="event__type-wrapper">
           <label class="event__type  event__type-btn" for="event-type-toggle-1">
@@ -140,12 +139,23 @@ const createEventAddTemplate = () => (
           </div>
         </section>
       </section>
-    </form>
-  </li>`
+    </form>`
 );
 
-export default class EventAdd extends View {
+export default class EventNewFormView {
   getTemplate() {
-    return createEventAddTemplate();
+    return createEventNewFormTemplate();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

@@ -1,11 +1,21 @@
-import View from './view.js';
+import {createElement} from '../render.js';
 
-const createEventListTemplate = () => (
-  `<ul class="trip-events__list"></ul>`
-);
+const createEventEventListTemplate = () => '<ul class="trip-events__list"></ul>';
 
-export default class EventList extends View {
+export default class EventListView {
   getTemplate() {
-    return createEventListTemplate();
+    return createEventEventListTemplate();
+  }
+
+  getElement() {
+    if (!this.element) {
+      this.element = createElement(this.getTemplate());
+    }
+
+    return this.element;
+  }
+
+  removeElement() {
+    this.element = null;
   }
 }

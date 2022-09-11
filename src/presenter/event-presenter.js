@@ -6,35 +6,73 @@ import EventListView from '../view/event-list-view.js';
 import EventEditFormView from '../view/event-edit-form-view.js';
 
 export default class EventPresenter {
-  eventListComponent = new EventListView();
+  #eventListComponent = new EventListView();
 
-  init = (eventsContainer, pointModel) => {
-    this.eventsContainer = eventsContainer;
+  #eventsContainer = null;
+  #pointsModel = null;
 
-    this.pointModel = pointModel;
-    this.points = [...this.pointModel.getPoints()];
-    this.getDestination = this.pointModel.getDestination;
+  #points = [];
 
-    this.getOffer = this.pointModel.getOffer;
-    this.getOffersByType = this.pointModel.getOffersByType;
+  init = (eventsContainer, pointsModel) => {
+    this.#eventsContainer = eventsContainer;
+
+    this.#pointsModel = pointsModel;
+    this.#points = [...this.#pointsModel.points];
+    this.getOffersByType = this.#pointsModel.getOffersByType;
+
+    render(this.#eventListComponent, this.#eventsContainer);
+
+    for (let i = 0; i < this.#points.length; i++) {
+      const point = this.#points[i];
+      const offersByType = this.getOffersByType(point.type);
+
+      this.#renderEvent(point, offersByType);
+    }
+  };
+
+  #renderEvent = (point, offersByType) => {
+    const eventComponent = new EventView(point);
+    const eventEditFormComponent = new EventEditFormView(point, offersByType);
 
     const renderEventItem = (component) => {
       const eventListItemElement = new EventListItemView();
 
-      render(eventListItemElement, this.eventListComponent.getElement());
-      render(component, eventListItemElement.getElement());
+      render(eventListItemElement, this.#eventListComponent.element);
+      render(component, eventListItemElement.element);
     };
 
-    render(this.eventListComponent, this.eventsContainer);
+    renderEventItem(eventComponent);
 
-    for (let i = 0; i < this.points.length; i++) {
-      const point = this.points[i];
-      const destination = this.getDestination(point.destination);
-      const offers = point.offers.map(this.getOffer);
-      const offersByType = this.getOffersByType(point.type);
-
-      renderEventItem(new EventView(point, destination, offers));
-      renderEventItem(new EventEditFormView(point, destination, offers, offersByType));
+    function replacePointToForm() {
+      eventComponent.element.replaceWith(eventEditFormComponent.element);
     }
+
+    const replaceFormToPoint = () => {
+      eventEditFormComponent.element.replaceWith(eventComponent.element);
+    };
+
+    const onEscKeyDown = (evt) => {
+      if (evt.key === 'Escape' || evt.key === 'Esc') {
+        evt.preventDefault();
+        replaceFormToPoint();
+        document.removeEventListener('keydown', onEscKeyDown);
+      }
+    };
+
+    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replacePointToForm();
+      document.addEventListener('keydown', onEscKeyDown);
+    });
+
+    document.querySelector('form').addEventListener('submit', (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
+
+    eventEditFormComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+      replaceFormToPoint();
+      document.removeEventListener('keydown', onEscKeyDown);
+    });
   };
 }

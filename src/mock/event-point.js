@@ -1,6 +1,8 @@
 import {getRandomInt, getRandomSubArray, getRandomArrayElement} from '../utils';
 import dayjs from 'dayjs';
 import { getOffersByType } from './event-offer.js';
+import { getRandomDestination } from './event-destination.js';
+
 
 const EVENT_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
@@ -9,7 +11,7 @@ const POINT_COUNT = 5;
 const MIN_BASE_PRICE = 30;
 const MAX_BASE_PRICE = 500;
 
-const getPrice = () => getRandomInt(MIN_BASE_PRICE, MAX_BASE_PRICE);
+const generatePrice = () => getRandomInt(MIN_BASE_PRICE, MAX_BASE_PRICE);
 
 const generateDate = () => {
   const maxDaysGap = 1;
@@ -18,25 +20,20 @@ const generateDate = () => {
   return dayjs().add(daysGap, 'day').toDate();
 };
 
-export const generatePoint = () => {
+export const generatePoint = (id) => {
   const type = getRandomArrayElement(EVENT_TYPE);
-  const offers = getRandomSubArray(getOffersByType(type).offers).map(({id}) => id);
 
   return {
-    basePrice: getPrice(),
+    id: id,
+    basePrice: generatePrice(),
     dateFrom: generateDate(),
     dateTo: generateDate(),
-    destination: 1,
-    id: 1,
-    offers: offers,
+    destination: getRandomDestination().id,
+    offers: getRandomSubArray(getOffersByType(type).offers).map((offer) => offer.id),
     type: type
   };
 };
 
-
-const pointsArray = Array.from({
+export const generatePoints = () => Array.from({
   length: POINT_COUNT,
 }, (_, k) => generatePoint(k + 1));
-
-
-export const getPoints = () => pointsArray;

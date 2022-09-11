@@ -16,6 +16,6 @@ const getMultipleRandom = (arr, num) => {
   return shuffled.slice(0, num);
 };
 
-const humanizeDate = (date) => dayjs(date).format('D MMMM');
+const humanizeDate = (date) => dayjs(date).format('D MMM');
 
 export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, humanizeDate};

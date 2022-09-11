@@ -5,6 +5,8 @@ import EventListView from '../view/event-list-view.js';
 
 import EventEditFormView from '../view/event-edit-form-view.js';
 
+import EventEmptyListView from '../view/event-empty-list-view.js';
+
 export default class EventPresenter {
   #eventListComponent = new EventListView();
 
@@ -13,24 +15,22 @@ export default class EventPresenter {
 
   #points = [];
 
-  init = (eventsContainer, pointsModel) => {
+  constructor(eventsContainer, pointsModel) {
     this.#eventsContainer = eventsContainer;
 
     this.#pointsModel = pointsModel;
     this.#points = [...this.#pointsModel.points];
     this.getOffersByType = this.#pointsModel.getOffersByType;
+  }
 
+  init = () => {
     render(this.#eventListComponent, this.#eventsContainer);
 
-    for (let i = 0; i < this.#points.length; i++) {
-      const point = this.#points[i];
-      const offersByType = this.getOffersByType(point.type);
-
-      this.#renderEvent(point, offersByType);
-    }
+    this.#renderEvents();
   };
 
-  #renderEvent = (point, offersByType) => {
+  #renderEvent = (point) => {
+    const offersByType = this.getOffersByType(point.type);
     const eventComponent = new EventView(point);
     const eventEditFormComponent = new EventEditFormView(point, offersByType);
 
@@ -75,4 +75,13 @@ export default class EventPresenter {
       document.removeEventListener('keydown', onEscKeyDown);
     });
   };
+
+  #renderEvents = () => {
+    if (this.#points.length === 0) {
+      render(new EventEmptyListView(), this.#eventsContainer);
+    }
+
+    this.#points.forEach(this.#renderEvent);
+  };
+
 }

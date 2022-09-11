@@ -6,7 +6,7 @@ import { getRandomDestination } from './event-destination.js';
 
 const EVENT_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
-const POINT_COUNT = 5;
+const MAX_POINT_COUNT = 5;
 
 const MIN_BASE_PRICE = 30;
 const MAX_BASE_PRICE = 500;
@@ -35,5 +35,5 @@ export const generatePoint = (id) => {
 };
 
 export const generatePoints = () => Array.from({
-  length: POINT_COUNT,
+  length:  getRandomInt(0, MAX_POINT_COUNT),
 }, (_, k) => generatePoint(k + 1));

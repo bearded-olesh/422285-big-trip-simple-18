@@ -17,5 +17,5 @@ render(new SortView(), tripEventsElement);
 
 const pointModel = new PointModel();
 
-const eventPresenter = new EventPresenter();
-eventPresenter.init(tripEventsElement, pointModel);
+const eventPresenter = new EventPresenter(tripEventsElement, pointModel);
+eventPresenter.init();

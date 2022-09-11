@@ -1,8 +1,8 @@
 import {render} from './render.js';
-import SortView from './view/sort.js';
-import FilterView from './view/filter.js';
+import SortView from './view/sort-view.js';
+import FilterView from './view/filter-view.js';
 
-import PointModel from './model/point-model.js';
+import PointModel from './model/points-model.js';
 
 import EventPresenter from './presenter/event-presenter.js';
 

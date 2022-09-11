@@ -32,4 +32,6 @@ const generateDestinationArray = () => Array.from({
 
 const destinationArray = generateDestinationArray();
 
+export const getRandomDestination = () => getRandomArrayElement(destinationArray);
+
 export const getDestination = (id) => destinationArray.filter((element) => element.id === id)[0];

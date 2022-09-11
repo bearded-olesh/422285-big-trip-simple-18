@@ -1,21 +1,27 @@
-import {createElement} from '../render.js';
-import {humanizeDate} from '../utils.js';
+import {
+  createElement
+} from '../render.js';
+import {
+  humanizeDate
+} from '../utils.js';
 
-const createEventTemplate = (point, destination, offers) => {
+const createEventTemplate = (point) => {
   const {
     basePrice,
     type,
     dateFrom,
-    dateTo
+    dateTo,
+    destination,
+    offers,
   } = point;
 
-  const {name} = destination;
   const startDate = dateFrom !== null ? humanizeDate(dateFrom) : '';
   const endDate = dateTo !== null ? humanizeDate(dateTo) : '';
 
   const offersTemplate = offers.map((offer) =>
     `<li class="event__offer">
     <span class="event__offer-title">${offer.title}</span>
+
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.price}</span>
     </li>`
@@ -28,7 +34,7 @@ const createEventTemplate = (point, destination, offers) => {
       <div class="event__type">
         <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
       </div>
-      <h3 class="event__title">${type[0].toUpperCase()}${type.slice(1)} ${name} </h3>
+      <h3 class="event__title">${type} ${destination.name} </h3>
       <div class="event__schedule">
         <p class="event__time">
           <time class="event__start-time" datetime="2019-03-18T10:30">${startDate}</time>
@@ -51,25 +57,26 @@ const createEventTemplate = (point, destination, offers) => {
 };
 
 export default class EventView {
-  constructor(point, destination, offers) {
-    this.point = point;
-    this.destination = destination;
-    this.offers = offers;
+  #element = null;
+  #point = null;
+
+  constructor(point) {
+    this.#point = point;
   }
 
-  getTemplate() {
-    return createEventTemplate(this.point, this.destination, this.offers);
+  get template() {
+    return createEventTemplate(this.#point);
   }
 
-  getElement() {
-    if (!this.element) {
-      this.element = createElement(this.getTemplate());
+  get element() {
+    if (!this.#element) {
+      this.#element = createElement(this.template);
     }
 
-    return this.element;
+    return this.#element;
   }
 
   removeElement() {
-    this.element = null;
+    this.#element = null;
   }
 }

@@ -1,8 +1,10 @@
-import {getRandomInt, getRandomSubArray, getRandomArrayElement} from '../utils';
+import {
+  getRandomInt, getRandomSubArray, getRandomArrayElement
+} from '../utils/common.js';
+
 import dayjs from 'dayjs';
 import { getOffersByType } from './event-offer.js';
 import { getRandomDestination } from './event-destination.js';
-
 
 const EVENT_TYPE = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 

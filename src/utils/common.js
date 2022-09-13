@@ -1,3 +1,4 @@
+import dayjs from 'dayjs';
 const getRandomInt = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -14,4 +15,20 @@ const getMultipleRandom = (arr, num) => {
   return shuffled.slice(0, num);
 };
 
-export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom};
+const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
+
+const isFutureDate = (date) => dayjs().isBefore(dayjs(date), 'day') || dayjs().isSame(dayjs(date), 'day');
+
+export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, updateItem, isFutureDate};

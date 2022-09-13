@@ -1,4 +1,4 @@
-import {render} from '../render.js';
+import {render, replace} from '../framework/render.js';
 import EventView from '../view/event-view.js';
 import EventListItemView from '../view/event-list-item-view.js';
 import EventListView from '../view/event-list-view.js';
@@ -44,11 +44,11 @@ export default class EventPresenter {
     renderEventItem(eventComponent);
 
     function replacePointToForm() {
-      eventComponent.element.replaceWith(eventEditFormComponent.element);
+      replace(eventEditFormComponent, eventComponent);
     }
 
     const replaceFormToPoint = () => {
-      eventEditFormComponent.element.replaceWith(eventComponent.element);
+      replace(eventComponent, eventEditFormComponent);
     };
 
     const onEscKeyDown = (evt) => {
@@ -59,18 +59,17 @@ export default class EventPresenter {
       }
     };
 
-    eventComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    eventComponent.setEditClickHandler(() => {
       replacePointToForm();
       document.addEventListener('keydown', onEscKeyDown);
     });
 
-    document.querySelector('form').addEventListener('submit', (evt) => {
-      evt.preventDefault();
+    eventEditFormComponent.setFormSubmitHandler(() => {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });
 
-    eventEditFormComponent.element.querySelector('.event__rollup-btn').addEventListener('click', () => {
+    eventEditFormComponent.setEditClickHandler(() => {
       replaceFormToPoint();
       document.removeEventListener('keydown', onEscKeyDown);
     });

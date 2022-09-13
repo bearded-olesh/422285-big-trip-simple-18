@@ -1,6 +1,7 @@
-import {createElement} from '../render.js';
-import {humanizeDate} from '../utils.js';
-
+import AbstractView from '../framework/view/abstract-view.js';
+import {
+  humanizeDate
+} from '../utils/event.js';
 
 const createEventEditFormTemplate = (point, offersByType) => {
 
@@ -150,11 +151,11 @@ const createEventEditFormTemplate = (point, offersByType) => {
   );
 };
 
-export default class EventEditFormView {
-  #element = null;
+export default class EventEditFormView extends AbstractView{
   #point = null;
 
   constructor(point, offersByType) {
+    super();
     this.#point = point;
     this.offersByType = offersByType;
   }
@@ -163,15 +164,23 @@ export default class EventEditFormView {
     return createEventEditFormTemplate(this.#point, this.offersByType);
   }
 
-  get element() {
-    if (!this.#element) {
-      this.#element = createElement(this.template);
-    }
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
 
-    return this.#element;
-  }
+  #formSubmitHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  };
 
-  removeElement() {
-    this.#element = null;
-  }
+  setEditClickHandler = (callback) => {
+    this._callback.editClick = callback;
+    this.element.querySelector('.event__rollup-btn').addEventListener('click', this.#editClickHandler);
+  };
+
+  #editClickHandler = (evt) => {
+    evt.preventDefault();
+    this._callback.editClick();
+  };
 }

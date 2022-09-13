@@ -1,4 +1,4 @@
-import { createElement } from '../render.js';
+import AbstractView from '../framework/view/abstract-view.js';
 
 const createEventEmptyListTemplate = () => (
   `  <p class="trip-events__msg">Click New Event to create your first point</p>
@@ -12,22 +12,8 @@ const createEventEmptyListTemplate = () => (
   `
 );
 
-export default class EventEmptyListView {
-  #element = null;
-
+export default class EventEmptyListView extends AbstractView{
   get template() {
     return createEventEmptyListTemplate();
-  }
-
-  get element() {
-    if (!this.#element ) {
-      this.#element = createElement(this.template);
-    }
-
-    return this.#element;
-  }
-
-  removeElement() {
-    this.#element = null;
   }
 }

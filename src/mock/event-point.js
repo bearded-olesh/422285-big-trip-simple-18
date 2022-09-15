@@ -16,7 +16,7 @@ const MAX_BASE_PRICE = 500;
 const generatePrice = () => getRandomInt(MIN_BASE_PRICE, MAX_BASE_PRICE);
 
 const generateDate = () => {
-  const maxDaysGap = 1;
+  const maxDaysGap = 4;
   const daysGap = getRandomInt(0, maxDaysGap);
 
   return dayjs().add(daysGap, 'day').toDate();

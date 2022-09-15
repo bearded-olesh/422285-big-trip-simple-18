@@ -1,4 +1,3 @@
-import dayjs from 'dayjs';
 const getRandomInt = (a = 0, b = 1) => {
   const lower = Math.ceil(Math.min(a, b));
   const upper = Math.floor(Math.max(a, b));
@@ -29,6 +28,4 @@ const updateItem = (items, update) => {
   ];
 };
 
-const isFutureDate = (date) => dayjs().isBefore(dayjs(date), 'day') || dayjs().isSame(dayjs(date), 'day');
-
-export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, updateItem, isFutureDate};
+export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, updateItem};

@@ -1,5 +1,5 @@
 import {generatePoints} from '../mock/event-point.js';
-import {getDestination} from '../mock/event-destination.js';
+import {getDestination, getAllDestinationNames} from '../mock/event-destination.js';
 import {getOffer, getOffersByType} from '../mock/event-offer.js';
 
 
@@ -22,4 +22,6 @@ export default class PointsModel {
   }
 
   getOffersByType = (type) => getOffersByType(type);
+  getDestination = (id) => getDestination(id);
+  getAllDestinationNames = () => getAllDestinationNames();
 }

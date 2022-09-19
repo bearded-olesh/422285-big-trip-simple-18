@@ -18,7 +18,7 @@ export const generateOffer = (id) => ({
 
 const generateOfferArray = () => Array.from({
   length: 25,
-}, (_, k) => generateOffer(k + 1));
+}, (_, k) => generateOffer(k));
 
 export const offerArray = generateOfferArray();
 
@@ -29,7 +29,7 @@ const generateOffersByType = (type) => ({
 
 const generateOffersByTypeArray = () => OFFER_TYPES.map(generateOffersByType);
 
-const offersByTypeArray = generateOffersByTypeArray();
+export const offersByTypeArray = generateOffersByTypeArray();
 
 export const getOffer = (id) => offerArray.filter((element) => element.id === id)[0];
 

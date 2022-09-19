@@ -8,32 +8,33 @@ const DESTINATION_DESCRIPTION = [
   'In rutrum ac purus sit amet tempus.'
 ];
 
-const DESTINATION_NAME = [
+export const DESTINATION_NAMES = [
   'Tokio', 'London', 'Paris'
 ];
 
-const DESTINATION_COUNT = 10;
+const generatePicture = (cityName) => ({
+  src: `https://placekitten.com/300/200?image=${getRandomInt(1, 15)}`,
+  description: `${cityName}Chamonix parliament building`
+});
 
-export const generateEventDestination = (id) => {
-  const fotoId = getRandomInt(1, 10);
+const generatePictureArray = (cityName) => Array.from({
+  length: 3,
+}, () => generatePicture(cityName));
 
-  return {
-    id: id,
-    description: getRandomArrayElement(DESTINATION_DESCRIPTION),
-    name: getRandomArrayElement(DESTINATION_NAME),
-    pictures: [{
-      src: `http://picsum.photos/300/200?r=${fotoId}`,
-      description: 'Chamonix parliament building'
-    }]
-  };
-};
 
-const generateDestinationArray = () => Array.from({
-  length: DESTINATION_COUNT,
-}, (_, k) => generateEventDestination(k + 1));
+export const generateEventDestination = (id, name) => ({
+  id: id,
+  description: getRandomArrayElement(DESTINATION_DESCRIPTION),
+  name: name,
+  pictures: generatePictureArray(name),
+});
+
+const generateDestinationArray = () => DESTINATION_NAMES.map((name, index) => generateEventDestination(index, name));
+
 
 const destinationArray = generateDestinationArray();
 
 export const getRandomDestination = () => getRandomArrayElement(destinationArray);
 
 export const getDestination = (id) => destinationArray.filter((element) => element.id === id)[0];
+export const getAllDestinationNames = () => destinationArray.map((destination) => ({id: destination.id, name: destination.name}));

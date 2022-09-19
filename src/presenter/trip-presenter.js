@@ -30,7 +30,6 @@ export default class TripPresenter {
 
   constructor(eventsContainer, pointsModel) {
     this.#eventsContainer = eventsContainer;
-
     this.#pointsModel = pointsModel;
   }
 
@@ -43,7 +42,7 @@ export default class TripPresenter {
     this.#renderPointList();
     this.#renderSort();
 
-    this.#sortPoints(this.#currentSortType);
+    //this.#sortPoints(this.#currentSortType);
   };
 
   #renderPoint = (point) => {

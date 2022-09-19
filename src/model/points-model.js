@@ -1,6 +1,6 @@
 import {generatePoints} from '../mock/event-point.js';
 import {getDestination, getAllDestinationNames} from '../mock/event-destination.js';
-import {getOffer, getOffersByType} from '../mock/event-offer.js';
+import {getOffer, getOffersByType, getOfferTypes, getAllOffersList} from '../mock/event-offer.js';
 
 
 const getEnrichedPoints = () => generatePoints().map((point) => ({
@@ -24,4 +24,8 @@ export default class PointsModel {
   getOffersByType = (type) => getOffersByType(type);
   getDestination = (id) => getDestination(id);
   getAllDestinationNames = () => getAllDestinationNames();
+
+  getOfferTypes = () => getOfferTypes();
+
+  getAllOffersList = () => getAllOffersList();
 }

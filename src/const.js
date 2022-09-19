@@ -1,3 +1,5 @@
+const OFFER_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
+
 const BLANC_POINT = {
   basePrice: null,
   dateFrom: null,
@@ -18,4 +20,4 @@ const SortType = {
   PRICE: 'price',
 };
 
-export {BLANC_POINT, FilterType, SortType};
+export {OFFER_TYPES, BLANC_POINT, FilterType, SortType};

@@ -20,7 +20,6 @@ export default class PointPresenter {
   #pointEditFormComponent = null;
 
   #point = null;
-
   #pointsModel = null;
 
   #mode = Mode.DEFAULT;
@@ -36,6 +35,10 @@ export default class PointPresenter {
     this.getDestination = this.#pointsModel.getDestination;
     this.getAllDestinationNames = this.#pointsModel.getAllDestinationNames;
 
+    this.getOfferTypes = this.#pointsModel.getOfferTypes;
+
+    this.getAllOffersList = this.#pointsModel.getAllOffersList;
+
     this.#changeData = changeData;
     this.#changeMode = changeMode;
   }
@@ -47,7 +50,7 @@ export default class PointPresenter {
     const prevPointEditFormComponent = this.#pointEditFormComponent;
 
     this.#pointComponent = new EventView(point);
-    this.#pointEditFormComponent = new EventEditFormView(point, this.getOffersByType, this.getDestination, this.getAllDestinationNames);
+    this.#pointEditFormComponent = new EventEditFormView(point, this.getOffersByType, this.getDestination, this.getAllDestinationNames, this.getOfferTypes, this.getAllOffersList);
 
     this.#pointComponent.setEditClickHandler(this.#handleEditClick);
     this.#pointEditFormComponent.setFormSubmitHandler(this.#handleFormSubmit);

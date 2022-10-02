@@ -37,4 +37,3 @@ export const getOfferTypes = () => offersByTypeArray.map((offerType) => ({type: 
 export const getOffer = (id) => offerArray.filter((element) => element.id === id)[0];
 
 export const getOffersByType = (type) => offersByTypeArray.filter((element) => element.type === type)[0];
-

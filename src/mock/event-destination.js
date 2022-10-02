@@ -28,7 +28,7 @@ export const generateEventDestination = (id, name) => ({
   pictures: generatePictureArray(name),
 });
 
-const generateDestinationArray = () => DESTINATION_NAMES.map((name, index) => generateEventDestination(index, name));
+export const generateDestinationArray = () => DESTINATION_NAMES.map((name, index) => generateEventDestination(index, name));
 
 const destinationArray = generateDestinationArray();
 

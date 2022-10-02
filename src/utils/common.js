@@ -15,20 +15,6 @@ const getMultipleRandom = (arr, num) => {
   return shuffled.slice(0, num);
 };
 
-const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
 const isFutureDate = (date) => dayjs().isBefore(dayjs(date), 'day') || dayjs().isSame(dayjs(date), 'day');
 
-export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, updateItem, isFutureDate};
+export {getRandomInt, getRandomArrayElement, getRandomSubArray, getMultipleRandom, isFutureDate};

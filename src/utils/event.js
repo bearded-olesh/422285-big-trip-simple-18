@@ -6,7 +6,7 @@ const humanizePointEditDate = (date) => dayjs(date).format('DD/MM/YY HH:mm');
 
 const humanizePointRouteTime = (time) => dayjs(time).format('HH:mm');
 
-const isDataSubmitDisabled = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom)) <= 0;
+const isDataSubmitDisabled = (dateTo, dateFrom) => dayjs(dateTo).diff(dayjs(dateFrom)) < 0;
 
 const isDatesEqual = (pointA, pointB) => dayjs(pointA.dateFrom).isSame(pointB.dateFrom, 'D');
 

@@ -59,21 +59,30 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
 
   const offersTemplate = allOffers.map((offer) =>
     `<div class="event__offer-selector">
-    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${type}"
-    ${offers.some((selectedOffer) => selectedOffer.id === offer.id) ? 'checked' : ''}>
-    <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
-      <span class="event__offer-title">${offer.title}</span>
-      &plus;&euro;&nbsp;
-      <span class="event__offer-price">${offer.price}</span>
-    </label>
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${type}"
+      ${offers.some((selectedOffer) => selectedOffer.id === offer.id) ? 'checked' : ''}>
+      <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
   </div>`
   ).join('');
 
+  const createOffersTemplate = () => (
+    `<section class="event__section  event__section--offers">
+      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+      <div class="event__available-offers">
+      ${offersTemplate}
+      </div>
+    </section>`
+  );
+
   const createDestinationListTemplate = (selectedCity) =>
-    `<label class="event__label  event__type-output" for="event-destination-2">
+    `<label class="event__label  event__type-output" for="event-destination-${destination.id}">
     ${type}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-2" type="text" name="event-destination" value="${selectedCity}" list="destination-list-2">
+    <input class="event__input  event__input--destination" id="event-destination-${destination.id}" type="text" name="event-destination" value="${selectedCity}" list="destination-list-2">
     <datalist id="destination-list-2">
     ${allDestinationNames.map((destinationName) => `
     <option value="${destinationName.name}" id="${destinationName.id}" ${selectedCity === destinationName.name ? 'selected' : ''}></option>`
@@ -94,7 +103,7 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
       <p class="event__destination-description">${ description }</p>
       <div class="event__photos-container">
         <div class="event__photos-tape">
-          ${ pictures[0] ? template : '' }
+          ${template}
         </div>
       </div>
     </section>`;
@@ -134,15 +143,8 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
         </button>
       </header>
       <section class="event__details">
-        <section class="event__section  event__section--offers">
-          <h3 class="event__section-title  event__section-title--offers">Offers</h3>
 
-          <div class="event__available-offers">
-
-          ${offersTemplate}
-
-          </div>
-        </section>
+        ${allOffers[0] ? createOffersTemplate() : ''}
 
         ${ description ? createDescriptionTemplate() : '' }
 
@@ -282,8 +284,10 @@ export default class EventEditFormView extends AbstractStatefulView{
 
     if (evt.target.checked) {
       const offers = this._state.offers;
+      const allOffers = this.getOffersByType(this._state.type);
+      const selectedOffer = allOffers.offers.filter((offer) => Number(evt.target.dataset.id) === offer.id)[0];
 
-      offers.push(this.allOffersList[evt.target.dataset.id]);
+      offers.push(selectedOffer);
       this.updateElement({
         offers: offers,
       });
@@ -304,7 +308,7 @@ export default class EventEditFormView extends AbstractStatefulView{
   #priceInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({
-      basePrice: evt.target.value,
+      basePrice: Number(evt.target.value),
     });
   };
 

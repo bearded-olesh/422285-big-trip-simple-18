@@ -1,7 +1,8 @@
+import he from 'he';
 import AbstractStatefulView from '../framework/view/abstract-stateful-view.js';
 import {
   humanizePointEditDate, isDataSubmitDisabled
-} from '../utils/event.js';
+} from '../utils/point.js';
 
 import flatpickr from 'flatpickr';
 import 'flatpickr/dist/flatpickr.min.css';
@@ -14,6 +15,9 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
     dateTo,
     destination,
     offers,
+    isDisabled,
+    isSaving,
+    isDeleting
   } = point;
 
   const {
@@ -24,7 +28,7 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
 
   const createTypeTemplate = (pointType, checked) => (`
     <div class="event__type-item">
-      <input id="event-type-${pointType.type}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${pointType.type}" ${checked ? 'checked' : ''}>
+      <input id="event-type-${pointType.type}" class="event__type-input visually-hidden" type="radio" name="event-type" value="${pointType.type}" ${checked ? 'checked' : ''} ${isDisabled ? 'disabled' : ''}>
       <label class="event__type-label event__type-label--${pointType.type}" for="event-type-${pointType.type}">${pointType.type}</label>
     </div>
   `);
@@ -42,9 +46,9 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
           <span class="visually-hidden">Choose event type</span>
           ${icon}
         </label>
-        <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox">
+        <input class="event__type-toggle visually-hidden" id="event-type-toggle" type="checkbox" ${isDisabled ? 'disabled' : ''}>
         <div class="event__type-list">
-          <fieldset class="event__type-group">
+          <fieldset class="event__type-group" ${isDisabled ? 'disabled' : ''}>
             <legend class="visually-hidden">Event type</legend>
             ${typesTemplate}
           </fieldset>
@@ -59,7 +63,7 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
 
   const offersTemplate = allOffers.map((offer) =>
     `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${type}"
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${type}-${offer.id}" data-id="${offer.id}" type="checkbox" name="event-offer-${type} ${isDisabled ? 'disabled' : ''}"
       ${offers.some((selectedOffer) => selectedOffer.id === offer.id) ? 'checked' : ''}>
       <label class="event__offer-label" for="event-offer-${type}-${offer.id}">
         <span class="event__offer-title">${offer.title}</span>
@@ -79,17 +83,17 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
   );
 
   const createDestinationListTemplate = (selectedCity) =>
-    `<label class="event__label  event__type-output" for="event-destination-${destination.id}">
+    `<label class="event__label  event__type-output" for="event-destination-1">
     ${type}
     </label>
-    <input class="event__input  event__input--destination" id="event-destination-${destination.id}" type="text" name="event-destination" value="${selectedCity}" list="destination-list-2">
+    <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${selectedCity}" list="destination-list-2" required ${isDisabled ? 'disabled' : ''}>
     <datalist id="destination-list-2">
     ${allDestinationNames.map((destinationName) => `
     <option value="${destinationName.name}" id="${destinationName.id}" ${selectedCity === destinationName.name ? 'selected' : ''}></option>`
   ).join('')}
   </datalist>`;
 
-  const destinationListTemplate = createDestinationListTemplate(name);
+  const destinationListTemplate = createDestinationListTemplate(he.encode(name));
 
   const startDate = humanizePointEditDate(dateFrom);
   const endDate = humanizePointEditDate(dateTo);
@@ -107,7 +111,6 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
         </div>
       </div>
     </section>`;
-
   };
 
   return (
@@ -122,10 +125,10 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
 
         <div class="event__field-group  event__field-group--time">
           <label class="visually-hidden" for="event-start-time-1">From</label>
-          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}">
+          <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${startDate}" ${isDisabled ? 'disabled' : ''}>
           &mdash;
           <label class="visually-hidden" for="event-end-time-1">To</label>
-          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}">
+          <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${endDate}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
         <div class="event__field-group  event__field-group--price">
@@ -133,12 +136,12 @@ const createEventEditFormTemplate = (point, offersByType, allDestinationNames, o
             <span class="visually-hidden">Price</span>
             &euro;
           </label>
-          <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${basePrice}">
+          <input class="event__input  event__input--price" id="event-price-1" type="number" min="0" name="event-price" value="${basePrice}" ${isDisabled ? 'disabled' : ''}>
         </div>
 
-        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDataSubmitDisabled(dateTo, dateFrom) ? 'disabled' : ''}>Save</button>
-        <button class="event__reset-btn" type="reset">Delete</button>
-        <button class="event__rollup-btn" type="button">
+        <button class="event__save-btn  btn  btn--blue" type="submit" ${isDataSubmitDisabled(dateTo, dateFrom) || isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+        <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+        <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
           <span class="visually-hidden">Open event</span>
         </button>
       </header>
@@ -211,7 +214,7 @@ export default class EventEditFormView extends AbstractStatefulView{
       {
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateFrom,
-        onChange: this.#startDateChangeHandler,
+        onFocus: this.#startDateChangeHandler,
         enableTime: true,
         'time_24hr': true,
       }
@@ -224,7 +227,7 @@ export default class EventEditFormView extends AbstractStatefulView{
       {
         dateFormat: 'd/m/y H:i',
         defaultDate: this._state.dateTo,
-        onChange: this.#endDateChangeHandler,
+        onFocus: this.#endDateChangeHandler,
         enableTime: true,
         'time_24hr': true,
       }
@@ -233,10 +236,17 @@ export default class EventEditFormView extends AbstractStatefulView{
 
   static parsePointToState = (point) => ({
     ...point,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
   });
 
   static parseStateToPoint = (state) => {
     const point = { ...state };
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
 
     return point;
   };
@@ -272,20 +282,19 @@ export default class EventEditFormView extends AbstractStatefulView{
       this.element.querySelector('.event__input--destination').setCustomValidity('Please, choose destination from current list');
     }
 
-    const id = this.allDestinationNames.filter((element) => element.name === evt.target.value)[0].id;
+    const id = this.allDestinationNames.find((element) => element.name === evt.target.value).id;
     this.updateElement({
       destination: this.getDestination(id),
     });
   };
 
-  //6.1.5
   #selectedOffersToggleHandler = (evt) => {
     evt.preventDefault();
 
     if (evt.target.checked) {
       const offers = this._state.offers;
       const allOffers = this.getOffersByType(this._state.type);
-      const selectedOffer = allOffers.offers.filter((offer) => Number(evt.target.dataset.id) === offer.id)[0];
+      const selectedOffer = allOffers.offers.find((offer) => Number(evt.target.dataset.id) === offer.id);
 
       offers.push(selectedOffer);
       this.updateElement({

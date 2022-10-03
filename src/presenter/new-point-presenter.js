@@ -1,5 +1,4 @@
 import {remove, render, RenderPosition} from '../framework/render.js';
-import {nanoid} from 'nanoid';
 import {UserAction, UpdateType, BLANC_POINT} from '../const.js';
 
 import EventNewFormView from '../view/event-new-form-view.js';
@@ -50,9 +49,8 @@ export default class PointNewPresenter {
       this.#changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        {id: nanoid(), ...point},
+        point,
       );
-      this.destroy();
     });
 
     this.#pointFormComponent.setDeleteClickHandler(() => {
@@ -83,5 +81,25 @@ export default class PointNewPresenter {
       this.destroy();
     }
   };
+
+  setSaving = () => {
+    this.#pointFormComponent.updateElement({
+      isDisabled: true,
+      isSaving: true,
+    });
+  };
+
+  setAborting = () => {
+    const resetFormState = () => {
+      this.#pointFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointFormComponent.shake(resetFormState);
+  };
+
 }
 

@@ -20,6 +20,7 @@ export default class PointPresenter {
   #pointEditFormComponent = null;
 
   #point = null;
+
   #pointsModel = null;
 
   #mode = Mode.DEFAULT;

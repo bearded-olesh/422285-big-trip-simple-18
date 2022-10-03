@@ -1,7 +1,7 @@
 import AbstractView from '../framework/view/abstract-view.js';
 import {
   humanizePointRouteTime, humanizePointDate,
-} from '../utils/event.js';
+} from '../utils/point.js';
 
 const createEventTemplate = (point) => {
   const {

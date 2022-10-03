@@ -4,7 +4,7 @@ import {
   remove
 } from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
-import {isDatesEqual, isPriceEqual} from '../utils/event.js';
+import {isDatesEqual, isPriceEqual} from '../utils/point.js';
 import EventView from '../view/event-view.js';
 import EventEditFormView from '../view/event-edit-form-view.js';
 
@@ -69,7 +69,8 @@ export default class PointPresenter {
     }
 
     if (this.#mode === Mode.EDITING) {
-      replace(this.#pointEditFormComponent, prevPointEditFormComponent);
+      replace(this.#pointComponent, prevPointEditFormComponent);
+      this.#mode = Mode.DEFAULT;
     }
 
     remove(prevPointComponent);
@@ -87,6 +88,42 @@ export default class PointPresenter {
       this.#replaceFormToPoint();
     }
   };
+
+  setSaving = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditFormComponent.updateElement({
+        isDisabled: true,
+        isSaving: true,
+      });
+    }
+  };
+
+  setDeleting = () => {
+    if (this.#mode === Mode.EDITING) {
+      this.#pointEditFormComponent.updateElement({
+        isDisabled: true,
+        isDeleting: true,
+      });
+    }
+  };
+
+  setAborting = () => {
+    if (this.#mode === Mode.DEFAULT) {
+      this.#pointComponent.shake();
+      return;
+    }
+
+    const resetFormState = () => {
+      this.#pointEditFormComponent.updateElement({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this.#pointEditFormComponent.shake(resetFormState);
+  };
+
 
   #replacePointToForm() {
     replace(this.#pointEditFormComponent, this.#pointComponent);
@@ -123,7 +160,6 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
-    this.#replaceFormToPoint();
   };
 
   #handleClick = () => {

@@ -1,7 +1,5 @@
-const OFFER_TYPES = ['taxi', 'bus', 'train', 'ship', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
-
 const BLANC_POINT = {
-  basePrice: 1,
+  basePrice: 250,
   dateFrom: '2022-10-10T22:55:56.845Z',
   dateTo: '2022-10-17T22:55:56.845Z',
   destination: {
@@ -41,4 +39,4 @@ const EmptyListTextType = {
   [FilterType.FUTURE]: 'There are no future events now',
 };
 
-export {OFFER_TYPES, BLANC_POINT, FilterType, SortType, UserAction, UpdateType, EmptyListTextType};
+export {BLANC_POINT, FilterType, SortType, UserAction, UpdateType, EmptyListTextType};

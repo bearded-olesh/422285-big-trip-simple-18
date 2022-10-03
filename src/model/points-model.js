@@ -31,7 +31,6 @@ export default class PointsModel extends Observable {
       this.#offers = await this.#pointsApiService.offers;
       this.#destinations = await this.#pointsApiService.destinations;
       this.#points = points.map(this.#adaptToClient);
-      //console.log(points)
     } catch(err) {
       this.#points = [];
       this.#offers = [];
@@ -46,7 +45,7 @@ export default class PointsModel extends Observable {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t update unexisting task');
+      throw new Error('Can\'t update unexisting point');
     }
 
     try {
@@ -60,37 +59,43 @@ export default class PointsModel extends Observable {
 
       this._notify(updateType, updatedPoint);
     } catch(err) {
-      throw new Error('Can\'t update task');
+      throw new Error('Can\'t update point');
     }
   };
 
-  addPoint = (updateType, update) => {
-    this.#points = [
-      update,
-      ...this.#points,
-    ];
-
-    this._notify(updateType, update);
+  addPoint = async (updateType, update) => {
+    try {
+      const response = await this.#pointsApiService.addPoint(update);
+      const newPoint = this.#adaptToClient(response);
+      this.#points = [newPoint, ...this.#points];
+      this._notify(updateType, newPoint);
+    } catch(err) {
+      throw new Error('Can\'t add point');
+    }
   };
 
-  deletePoint = (updateType, update) => {
+  deletePoint = async(updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
-      throw new Error('Can\'t delete unexisting task');
+      throw new Error('Can\'t delete unexisting point');
     }
 
-    this.#points = [
-      ...this.#points.slice(0, index),
-      ...this.#points.slice(index + 1),
-    ];
-
-    this._notify(updateType);
+    try {
+      await this.#pointsApiService.deletePoint(update);
+      this.#points = [
+        ...this.#points.slice(0, index),
+        ...this.#points.slice(index + 1),
+      ];
+      this._notify(updateType);
+    } catch(err) {
+      throw new Error('Can\'t delete point');
+    }
   };
 
   #adaptToClient = (point) => {
-
     const destination = this.#destinations.find((element) => element.id === point.destination);
+
     const generatePointDestination = () => ({
       id: point.destination,
       name: destination.name,
@@ -98,7 +103,7 @@ export default class PointsModel extends Observable {
       pictures: destination.pictures,
     });
 
-    const generateOffers = () => (this.#offers.filter((element) => element.type === point.type)[0].offers);
+    const generateOffers = () => (this.#offers.find((element) => element.type === point.type).offers);
 
     const adaptedPoint = {...point,
       basePrice: point['base_price'],
@@ -108,7 +113,6 @@ export default class PointsModel extends Observable {
       offers: generateOffers().filter((offer) => point.offers.indexOf(offer.id) !== -1),
     };
 
-    // Ненужные ключи мы удаляем
     delete adaptedPoint['base_price'];
     delete adaptedPoint['date_from'];
     delete adaptedPoint['date_to'];
@@ -116,9 +120,9 @@ export default class PointsModel extends Observable {
     return adaptedPoint;
   };
 
-  getDestination = (id) => this.#destinations.filter((element) => element.id === id)[0];
+  getDestination = (id) => this.#destinations.find((element) => element.id === id);
   getAllDestinationNames = () => this.#destinations.map((destination) => ({id: destination.id, name: destination.name}));
   getOfferTypes = () => this.#offers.map((offer) => ({type: offer.type}));
-  getOffersByType = (type) => this.#offers.filter((element) => element.type === type)[0];
+  getOffersByType = (type) => this.#offers.find((element) => element.type === type);
   getAllOffersList = () => this.#offers;
 }

@@ -5,7 +5,7 @@ import EventListView from '../view/event-list-view.js';
 import EventEmptyListView from '../view/event-empty-list-view.js';
 
 import PointPresenter from './point-presenter.js';
-import PointNewPresenter from './new-point-presenter.js';
+import PointNewPresenter from './point-new-presenter.js';
 
 import SortView from '../view/sort-view.js';
 import {SortType, UpdateType, UserAction, FilterType} from '../const.js';

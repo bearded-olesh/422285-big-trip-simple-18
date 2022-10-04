@@ -1,8 +1,4 @@
-import {
-  render,
-  replace,
-  remove
-} from '../framework/render.js';
+import {render,replace,remove} from '../framework/render.js';
 import {UserAction, UpdateType} from '../const.js';
 import {isDatesEqual, isPriceEqual} from '../utils/point.js';
 import EventView from '../view/event-view.js';
@@ -160,6 +156,8 @@ export default class PointPresenter {
       isMinorUpdate ? UpdateType.MINOR : UpdateType.PATCH,
       update,
     );
+
+    this.#replaceFormToPoint();
   };
 
   #handleClick = () => {

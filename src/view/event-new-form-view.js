@@ -213,16 +213,6 @@ export default class EventNewFormView extends AbstractStatefulView{
     );
   };
 
-  static parsePointToState = (point) => ({
-    ...point,
-  });
-
-  static parseStateToPoint = (state) => {
-    const point = { ...state };
-
-    return point;
-  };
-
   #setInnerHandlers = () => {
     Array.from(this.element.querySelectorAll('.event__type-input'))
       .forEach((offerType) => offerType.addEventListener('click', this.#offerTypeToggleHandler));
@@ -321,6 +311,16 @@ export default class EventNewFormView extends AbstractStatefulView{
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.deleteClick(EventNewFormView.parseStateToPoint(this._state));
+  };
+
+  static parsePointToState = (point) => ({
+    ...point,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+
+    return point;
   };
 }
 

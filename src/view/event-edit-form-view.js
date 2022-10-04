@@ -234,23 +234,6 @@ export default class EventEditFormView extends AbstractStatefulView{
     );
   };
 
-  static parsePointToState = (point) => ({
-    ...point,
-    isDisabled: false,
-    isSaving: false,
-    isDeleting: false,
-  });
-
-  static parseStateToPoint = (state) => {
-    const point = { ...state };
-
-    delete point.isDisabled;
-    delete point.isSaving;
-    delete point.isDeleting;
-
-    return point;
-  };
-
   #setInnerHandlers = () => {
     Array.from(this.element.querySelectorAll('.event__type-input'))
       .forEach((offerType) => offerType.addEventListener('click', this.#offerTypeToggleHandler));
@@ -359,6 +342,23 @@ export default class EventEditFormView extends AbstractStatefulView{
   #editClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.editClick();
+  };
+
+  static parsePointToState = (point) => ({
+    ...point,
+    isDisabled: false,
+    isSaving: false,
+    isDeleting: false,
+  });
+
+  static parseStateToPoint = (state) => {
+    const point = { ...state };
+
+    delete point.isDisabled;
+    delete point.isSaving;
+    delete point.isDeleting;
+
+    return point;
   };
 }
 

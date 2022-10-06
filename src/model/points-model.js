@@ -25,21 +25,28 @@ export default class PointsModel extends Observable {
     return this.#destinations;
   }
 
+  getAllDestinationNames = () => this.#destinations.map((destination) => ({id: destination.id, name: destination.name}));
+  getOfferTypes = () => this.#offers.map((offer) => ({type: offer.type}));
+  getOffersByType = (type) => this.#offers.find((element) => element.type === type);
+  getAllOffersList = () => this.#offers;
+  getDestination = (id) => this.#destinations.find((element) => element.id === id);
+
   init = async () => {
     try {
       const points = await this.#pointsApiService.points;
       this.#offers = await this.#pointsApiService.offers;
       this.#destinations = await this.#pointsApiService.destinations;
       this.#points = points.map(this.#adaptToClient);
+
+      this._notify(UpdateType.INIT);
     } catch(err) {
       this.#points = [];
       this.#offers = [];
       this.#destinations = [];
+
+      this._notify(UpdateType.OFFLINE);
     }
-
-    this._notify(UpdateType.INIT);
   };
-
 
   updatePoint = async (updateType, update) => {
     const index = this.#points.findIndex((point) => point.id === update.id);
@@ -119,10 +126,4 @@ export default class PointsModel extends Observable {
 
     return adaptedPoint;
   };
-
-  getDestination = (id) => this.#destinations.find((element) => element.id === id);
-  getAllDestinationNames = () => this.#destinations.map((destination) => ({id: destination.id, name: destination.name}));
-  getOfferTypes = () => this.#offers.map((offer) => ({type: offer.type}));
-  getOffersByType = (type) => this.#offers.find((element) => element.type === type);
-  getAllOffersList = () => this.#offers;
 }

@@ -13,7 +13,8 @@ const BLANC_POINT = {
 
 const FilterType = {
   EVERYTHING: 'Everything',
-  FUTURE: 'Future'
+  FUTURE: 'Future',
+  OFFLINE: 'Offline',
 };
 
 const SortType = {
@@ -32,11 +33,13 @@ const UpdateType = {
   MINOR: 'MINOR',
   MAJOR: 'MAJOR',
   INIT: 'INIT',
+  OFFLINE: 'OFFLINE',
 };
 
 const EmptyListTextType = {
   [FilterType.EVERYTHING]: 'Click New Event to create your first point',
   [FilterType.FUTURE]: 'There are no future events now',
+  [FilterType.OFFLINE]: 'No connection',
 };
 
 export {BLANC_POINT, FilterType, SortType, UserAction, UpdateType, EmptyListTextType};

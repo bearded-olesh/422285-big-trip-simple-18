@@ -36,5 +36,9 @@ tripPresenter.init();
 
 pointsModel.init()
   .finally(() => {
+    if (tripPresenter.offline) {
+      newPointButton.disabled = true;
+    }
+
     newPointButton.addEventListener('click', handleNewPointButtonClick);
   });

@@ -38,6 +38,8 @@ export default class TripPresenter {
   #isLoading = true;
   #uiBlocker = new UiBlocker(TimeLimit.LOWER_LIMIT, TimeLimit.UPPER_LIMIT);
 
+  #offline = false;
+
   constructor(eventsContainer, pointsModel, filterModel) {
     this.#eventsContainer = eventsContainer;
     this.#pointsModel = pointsModel;
@@ -64,6 +66,10 @@ export default class TripPresenter {
     return filteredPoints;
   }
 
+  get offline () {
+    return this.#offline;
+  }
+
   init = () => {
     render(this.#eventListComponent, this.#eventsContainer);
 
@@ -74,17 +80,6 @@ export default class TripPresenter {
     this.#currentSortType = SortType.DEFAULT;
     this.#filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this.#pointNewPresenter.init(callback, this.#pointsModel.offers, this.#pointsModel.destinations);
-  };
-
-  #renderLoading = () => {
-    render(this.#loadingComponent, this.#eventListComponent.element, RenderPosition.AFTERBEGIN);
-  };
-
-  #renderPoint = (point) => {
-    const pointPresenter = new PointPresenter(this.#eventListComponent.element, this.#pointsModel, this.#handleViewAction, this.#handleModeChange);
-    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
-
-    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #handleModeChange = () => {
@@ -144,7 +139,24 @@ export default class TripPresenter {
         remove(this.#loadingComponent);
         this.#renderTrip();
         break;
+      case UpdateType.OFFLINE:
+        this.#isLoading = false;
+        remove(this.#loadingComponent);
+        this.#offline = true;
+        this.#renderTrip();
+        break;
     }
+  };
+
+  #renderLoading = () => {
+    render(this.#loadingComponent, this.#eventListComponent.element, RenderPosition.AFTERBEGIN);
+  };
+
+  #renderPoint = (point) => {
+    const pointPresenter = new PointPresenter(this.#eventListComponent.element, this.#pointsModel, this.#handleViewAction, this.#handleModeChange);
+    pointPresenter.init(point, this.#pointsModel.offers, this.#pointsModel.destinations);
+
+    this.#pointPresenter.set(point.id, pointPresenter);
   };
 
   #renderSort = () => {
@@ -182,7 +194,11 @@ export default class TripPresenter {
     const points = this.points;
     const pointCount = points.length;
 
-    if (pointCount === 0) {
+    if (pointCount === 0 || this.#offline) {
+      if (this.#offline) {
+        this.#filterType = FilterType.OFFLINE;
+      }
+
       this.#renderNoPoints();
     }
 

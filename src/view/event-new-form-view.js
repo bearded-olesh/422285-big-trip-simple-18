@@ -175,42 +175,29 @@ export default class EventNewFormView extends AbstractStatefulView{
     }
   };
 
-  #startDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateFrom: userDate,
-    });
-  };
-
-  #endDateChangeHandler = ([userDate]) => {
-    this.updateElement({
-      dateTo: userDate,
-    });
-  };
-
-  #startDateDatepicker = () => {
-    this.#datepicker = flatpickr(
-      this.element.querySelector('.event__input--time[name=event-start-time]'),
-      {
-        dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.dateFrom,
-        onFocus: this.#startDateChangeHandler,
-        enableTime: true,
-        'time_24hr': true,
-      }
+  reset = (point) => {
+    this.updateElement(
+      EventNewFormView.parsePointToState(point),
     );
   };
 
-  #endDateDatepicker = () => {
-    this.#datepicker = flatpickr(
-      this.element.querySelector('.event__input--time[name=event-end-time]'),
-      {
-        dateFormat: 'd/m/y H:i',
-        defaultDate: this._state.dateTo,
-        onFocus: this.#endDateChangeHandler,
-        enableTime: true,
-        'time_24hr': true,
-      }
-    );
+  setFormSubmitHandler = (callback) => {
+    this._callback.formSubmit = callback;
+    this.element.addEventListener('submit', this.#formSubmitHandler);
+  };
+
+  setDeleteClickHandler = (callback) => {
+    this._callback.deleteClick = callback;
+    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
+  };
+
+  _restoreHandlers = () => {
+    this.#setInnerHandlers();
+    this.#startDateDatepicker();
+    this.#endDateDatepicker();
+
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
   };
 
   #setInnerHandlers = () => {
@@ -225,6 +212,18 @@ export default class EventNewFormView extends AbstractStatefulView{
 
     Array.from(this.element.querySelectorAll('.event__offer-checkbox'))
       .forEach((eventType) => eventType.addEventListener('change', this.#selectedOffersToggleHandler));
+  };
+
+  #startDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateFrom: userDate,
+    });
+  };
+
+  #endDateChangeHandler = ([userDate]) => {
+    this.updateElement({
+      dateTo: userDate,
+    });
   };
 
   #offerTypeToggleHandler = (evt) => {
@@ -271,36 +270,11 @@ export default class EventNewFormView extends AbstractStatefulView{
     }
   };
 
-  reset = (point) => {
-    this.updateElement(
-      EventNewFormView.parsePointToState(point),
-    );
-  };
-
   #priceInputHandler = (evt) => {
     evt.preventDefault();
     this._setState({
       basePrice: Number(evt.target.value),
     });
-  };
-
-  _restoreHandlers = () => {
-    this.#setInnerHandlers();
-    this.#startDateDatepicker();
-    this.#endDateDatepicker();
-
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setDeleteClickHandler(this._callback.deleteClick);
-  };
-
-  setFormSubmitHandler = (callback) => {
-    this._callback.formSubmit = callback;
-    this.element.addEventListener('submit', this.#formSubmitHandler);
-  };
-
-  setDeleteClickHandler = (callback) => {
-    this._callback.deleteClick = callback;
-    this.element.querySelector('.event__reset-btn').addEventListener('click', this.#formDeleteClickHandler);
   };
 
   #formSubmitHandler = (evt) => {
@@ -311,6 +285,32 @@ export default class EventNewFormView extends AbstractStatefulView{
   #formDeleteClickHandler = (evt) => {
     evt.preventDefault();
     this._callback.deleteClick(EventNewFormView.parseStateToPoint(this._state));
+  };
+
+  #startDateDatepicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('.event__input--time[name=event-start-time]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateFrom,
+        onFocus: this.#startDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      }
+    );
+  };
+
+  #endDateDatepicker = () => {
+    this.#datepicker = flatpickr(
+      this.element.querySelector('.event__input--time[name=event-end-time]'),
+      {
+        dateFormat: 'd/m/y H:i',
+        defaultDate: this._state.dateTo,
+        onFocus: this.#endDateChangeHandler,
+        enableTime: true,
+        'time_24hr': true,
+      }
+    );
   };
 
   static parsePointToState = (point) => ({
